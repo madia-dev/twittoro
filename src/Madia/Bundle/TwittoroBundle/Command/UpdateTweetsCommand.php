@@ -15,6 +15,13 @@ use Oro\Bundle\ConfigBundle\Config\UserConfigManager;
 use Madia\Bundle\TwittoroBundle\Model\Api\Tweets;
 use Madia\Bundle\TwittoroBundle\Entity\Tweet;
 
+/**
+ * Update tweets command class
+ * This class represents the class for the updating tweets cron command.
+ * 
+ * This will class will try to get the raw JSON response from the twitter api
+ * and persist this data for the \Madia\Bundle\TwittoroBundle\Entity\Tweet entity.
+ */
 class UpdateTweetsCommand extends ContainerAwareCommand implements CronCommandInterface
 {
     const COMMAND_NAME   = 'oro:cron:madia:twittoro:update-tweets';
@@ -135,9 +142,14 @@ class UpdateTweetsCommand extends ContainerAwareCommand implements CronCommandIn
     protected function _persistTweetData($tweetData, $hashtag, $_output) {
         //get entitymanager
         $entityManager = $this->getContainer()->get('doctrine')->getManager();
-        $hashtag = '#orotraining';
-        //$tweetData is an object of the stdClass so it's not an array!
+        if($hashtag == 'all') {
+            $hashtag = '#orotraining'; 
+        }
+        //$tweetData is an object of the stdClass..
+        //can't handle this object as an array..
         foreach($tweetData->statuses as $tweet) {
+           
+           //creating new tweet entity
            $tweetEntity = new Tweet();
            
            $tweetEntity->setUsername($tweet->user->screen_name);
@@ -149,11 +161,20 @@ class UpdateTweetsCommand extends ContainerAwareCommand implements CronCommandIn
            $tweetEntity->setCreatedAt(new \DateTime());
            $tweetEntity->setUpdatedAt(new \DateTime());
            
-           $entityManager->persist($tweetEntity);
-           $entityManager->flush();
-           
            $output = new OutputLogger($_output);
-           $output->notice('record updated: '. $tweet->user->screen_name . ' ' . $tweet->text. ' '. $tweet->retweet_count . ' '. $tweet->created_at. ' '. $hashtag);
-        }
+           try {
+                
+                $entityManager->persist($tweetEntity);
+                $entityManager->flush();
+                
+                //do some logging if the record has been updated.
+                $output->notice('record updated: '. $tweet->user->screen_name . ' ' . $tweet->text. ' '. $tweet->retweet_count . ' '. $tweet->created_at. ' '. $hashtag);
+ 
+           } catch (Exception $e) {
+               $output->notice('Something went wrong');
+               $output->notice($e);
+               return;
+           }           
+       }
     }
 }

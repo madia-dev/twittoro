@@ -8,7 +8,10 @@ use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
 class TweetRepository extends EntityRepository
 {
     /**
-     * Get opportunities by state
+     * Get get tweets the tweet count grouped by the username
+     * Some usernames have a couple of tweets and those need 
+     * to be on top of the list. The list is ordered by tweet_count
+     * per username in a descending order (max count first).
      *
      * @param $aclHelper AclHelper
      * @return array
@@ -20,10 +23,11 @@ class TweetRepository extends EntityRepository
     public function getTweetsByUsername(AclHelper $aclHelper)
     {
         /**
+         * Query for getting the tweets by username
          * SELECT  `username` , COUNT(  `tweet` ) AS  `tweet_count` 
-FROM  `madia_twittoro` 
-GROUP BY  `username` 
-ORDER BY  `tweet_count` DESC 
+         * FROM  `madia_twittoro` 
+         * GROUP BY  `username` 
+         * ORDER BY  `tweet_count` DESC 
          * 
          */
         

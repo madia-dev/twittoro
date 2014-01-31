@@ -20,4 +20,8 @@ madia:
         update_tweets.consumer_secret_not_configured: Your Consumer Secret is not configured
         update_tweets.tweets_have_been_updated: Tweets have been updated!
         
+        ##Dashboard::normal chart
         tweets_by_username.title: "Tweets by Username for #orotraining"
+        
+        ##Dashboard::pie chart
+        #tweets_by_username.title: "Tweets by Username for #orotraining"

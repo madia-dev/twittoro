@@ -2,39 +2,45 @@
 
 namespace Madia\Bundle\TwittoroBundle\Model\Api;
 
-//use Doctrine\ORM\EntityManager;
-
-//use Acme\Bundle\TaskBundle\Entity\Repository\TaskRepository;
-//use Acme\Bundle\TaskBundle\Entity\TaskStatus;
-
 /**
  * Tweets class is for constructing the api call to twitter
  * via the twitter api. This will return all the tweets based on
- * the given parameters
+ * the given parameters in a JSON string
  * 
  */
 class Tweets {
     
-    
+    /* @var OAuth token */
     protected $_oAuthToken;
-    
+    /* @var OAuth token secret */
     protected $_oAuthTokenSecret;
-    
+    /* @var Consumer Key */
     protected $_consumerKey;
-    
+    /* @var Consumer Secret */
     protected $_consumerSecret;
-    
+    /* @var hashtag (without the #) */
     protected $_hashtag;
-    
+    /* @var basic url for the api request */
     protected $_baseUrl;
-    
+    /* @var constructed url with additional parameters */
     protected $_url;
     
     
     public function __construct() {
         $this->_baseUrl = 'https://api.twitter.com/1.1/search/tweets.json';
     }
-
+    
+    /**
+     * Create the request based on the given parameters
+     * and make the call to twitter api.
+     * 
+     * @param type $oAuthToken not ecoded OAuth Token for authorizing requests
+     * @param type $oAuthTokenSecret not encoded OAuth Token secret
+     * @param type $consumerKey not encoded Consumerkey string
+     * @param type $consumerSecret not encoded Consumersecret token
+     * @param string $hashtag the hashtag we should search for in the api call
+     * @return type raw JSON string
+      */
     public function makeApiCall($oAuthToken, $oAuthTokenSecret, $consumerKey, $consumerSecret, $hashtag) {
         
         $oauth = array( 'oauth_consumer_key' => $consumerKey,
@@ -78,6 +84,15 @@ class Tweets {
 
     }
     
+    /**
+     * Build the correct url for making the api call
+     * with all the corresponding parameters and method.
+     * 
+     * @param type $baseURI the url to make the call to
+     * @param type $method api request method ('POST' || 'GEt')
+     * @param type $params parameters for request
+     * @return type String the basestring with request method and parameters
+     */
     protected function buildBaseString($baseURI, $method, $params)
     {
         $r = array(); 
@@ -88,7 +103,13 @@ class Tweets {
 
         return $method."&" . rawurlencode($baseURI) . '&' . rawurlencode(implode('&', $r)); //return complete base string
     }
-
+    
+    /**
+     * Build the authorization header for the request.
+     * 
+     * @param type $oauth encoded paramters for the request
+     * @return type String the authorization header string.
+     */
     protected function buildAuthorizationHeader($oauth)
     {
         $r = 'Authorization: OAuth ';
