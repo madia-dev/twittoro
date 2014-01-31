@@ -1,0 +1,2 @@
+bundles:
+    - { name: Madia\Bundle\TwittoroBundle\MadiaTwittoroBundle, priority: 100 }

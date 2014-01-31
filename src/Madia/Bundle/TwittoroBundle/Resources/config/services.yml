@@ -1,0 +1,7 @@
+parameters:    
+    madia_twittoro.api_tweets.class: Madia\Bundle\TwittoroBundle\Model\Api\Tweets
+    
+services:
+    madia_twittoro.api_tweets:
+        class: %madia_twittoro.api_tweets.class%
+          

@@ -1,0 +1,63 @@
+oro_system_configuration:
+    groups:
+        madia:
+            title: madia.twittoro.update_tweets.config.group.madia.label
+        madia_twittoro:
+            title: madia.twittoro.update_tweets.config.group.madia_twittoro.label
+        madia_twittoro_settings:
+            title: madia.twittoro.update_tweets.config.group.madia_twittoro_settings.label
+        madia_twittoro_settings_update_tweets:
+            title: madia.twittoro.update_tweets.config.group.madia_twittoro_settings_update_tweets.label
+
+    fields:
+        madia_twittoro.update_tweets_enabled:
+            type: oro_config_checkbox
+            priority: 60
+            options:
+                label: madia.twittoro.update_tweets.config.enabled.label
+        madia_twittoro.update_tweets_oauth_access_token:
+            type: text
+            priority: 50
+            options:
+                label: madia.twittoro.update_tweets.config.oauth_access_token.label
+                required: true
+        madia_twittoro.update_tweets_oauth_access_token_secret:
+            type: text
+            priority: 40
+            options:
+                label: madia.twittoro.update_tweets.config.oauth_access_token_secret.label
+                required: true
+        madia_twittoro.update_tweets_consumer_key:
+            type: text
+            priority: 30
+            options:
+                label: madia.twittoro.update_tweets.config.consumer_key.label
+                required: true
+        madia_twittoro.update_tweets_consumer_secret:
+            type: text
+            priority: 20
+            options:
+                label: madia.twittoro.update_tweets.config.consumer_secret.label
+                required: true
+        madia_twittoro.update_tweets_cron_schedule:
+            type: text
+            priority: 10
+            options:
+                label: madia.twittoro.update_tweets.config.cron_schedule.label
+                required: true
+    tree:
+        system_configuration:
+            madia:
+                children:
+                    madia_twittoro:
+                        children:
+                            madia_twittoro_settings:
+                                children:
+                                    madia_twittoro_settings_update_tweets:
+                                        children:
+                                            - madia_twittoro.update_tweets_enabled
+                                            - madia_twittoro.update_tweets_oauth_access_token
+                                            - madia_twittoro.update_tweets_oauth_access_token_secret                                            
+                                            - madia_twittoro.update_tweets_consumer_key
+                                            - madia_twittoro.update_tweets_consumer_secret
+                                            - madia_twittoro.update_tweets_cron_schedule

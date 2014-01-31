@@ -1,0 +1,12 @@
+oro_dashboard_config:
+    widgets:
+        tweets_by_username:
+            label:      madia.twittoro.tweets_by_username.title
+            route:      madia_twittoro_dashboard_tweets_by_username_chart
+            acl:        madia_twittoro_view
+
+    dashboards:
+        main:
+            widgets:
+                tweets_by_username:
+                    position:   30

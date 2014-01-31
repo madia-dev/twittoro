@@ -1,0 +1,23 @@
+madia:
+    twittoro:
+        update_tweets.config.group.madia.label: Madia
+        update_tweets.config.group.madia_twittoro.label: Madia Twittoro
+        update_tweets.config.group.madia_twittoro_settings.label: Settings
+        update_tweets.config.group.madia_twittoro_settings_update_tweets.label: Update Tweets
+        
+        update_tweets.config.enabled.label: Enabled
+        update_tweets.config.oauth_access_token.label: OAuth Acces Token
+        update_tweets.config.oauth_access_token_secret.label: OAuth Acces Token Secret
+        update_tweets.config.consumer_key.label: API Consumer Key
+        update_tweets.config.consumer_secret.label: APP Consumer Secret
+        update_tweets.config.cron_schedule.label: Cron Schedule
+        
+        
+        ##command translations
+        update_tweets.oauth_access_token_not_configured: Your Oauth Access Token is not configured
+        update_tweets.oauth_access_token_secret_not_configured: Your Oauth Access Token Secret is not configured
+        update_tweets.consumer_key_not_configured: Your Consumer Key is not configured
+        update_tweets.consumer_secret_not_configured: Your Consumer Secret is not configured
+        update_tweets.tweets_have_been_updated: Tweets have been updated!
+        
+        tweets_by_username.title: "Tweets by Username for #orotraining"

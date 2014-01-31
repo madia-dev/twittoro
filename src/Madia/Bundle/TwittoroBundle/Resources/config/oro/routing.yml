@@ -1,0 +1,4 @@
+madia_twittoro_bundle:
+    resource:     "@MadiaTwittoroBundle/Controller"
+    type:         annotation
+    prefix:       /madia
