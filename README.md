@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Oro Platform Empty Application
 ==============================
 An example of empty application built using the Oro Platform.
@@ -73,3 +74,9 @@ app/console clank:server
 
 [1]:  http://symfony.com/doc/2.3/book/installation.html
 [2]:  http://getcomposer.org/
+=======
+twittoro
+========
+
+twittoro
+>>>>>>> f25f8167413af2905166ba6d8f9cfb7b23cf38b7
