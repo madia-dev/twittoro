@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Oro Platform Empty Application
 ==============================
 An example of empty application built using the Oro Platform.
@@ -77,6 +76,5 @@ app/console clank:server
 =======
 twittoro
 ========
-
-twittoro
->>>>>>> f25f8167413af2905166ba6d8f9cfb7b23cf38b7
+Bundle for extracting tweets from the twitter api and store them. 
+Chart widgets will display several statistics about the stored data.
