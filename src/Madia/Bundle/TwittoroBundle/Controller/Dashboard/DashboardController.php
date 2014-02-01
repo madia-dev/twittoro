@@ -23,7 +23,7 @@ class DashboardController extends Controller
             [
                 'items' => $this->getDoctrine()
                         ->getRepository('MadiaTwittoroBundle:Tweet')
-                        ->getTweetsByUsername($this->get('oro_security.acl_helper'))
+                        ->getTweetsByUsername($this->get('oro_security.acl_helper'), 'orocrm')
             ],
             $this->get('oro_dashboard.manager')->getWidgetAttributesForTwig($widget)
         );

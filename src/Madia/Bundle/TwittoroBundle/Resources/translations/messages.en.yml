@@ -18,7 +18,9 @@ madia:
         update_tweets.oauth_access_token_secret_not_configured: Your Oauth Access Token Secret is not configured
         update_tweets.consumer_key_not_configured: Your Consumer Key is not configured
         update_tweets.consumer_secret_not_configured: Your Consumer Secret is not configured
-        update_tweets.tweets_have_been_updated: Tweets have been updated!
+        update_tweets.tweets_have_been_created: Tweets have been updated!
+        update_tweets.no_new_tweets_found: No new tweets found for
+        update_tweets.record_created: record created
         
         ##Dashboard::normal chart
         tweets_by_username.title: "Tweets by Username for #orotraining"

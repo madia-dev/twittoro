@@ -110,6 +110,15 @@ class Tweet
      * @JMS\Type("string")
      */
     protected $hashtag;
+            
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="max_id", type="string", length=255)
+     * @Oro\Versioned
+     * @JMS\Type("string")
+     */
+    protected $maxId;
 
     /**
      * @var \DateTime $created
@@ -231,6 +240,22 @@ class Tweet
     public function getHashtag()
     {
         return $this->hashtag;
+    }    
+
+    /**
+     * @param string $maxId
+     */
+    public function setMaxId($maxId)
+    {
+        $this->maxId = $maxId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMaxId()
+    {
+        return $this->maxId;
     }    
     
     /**

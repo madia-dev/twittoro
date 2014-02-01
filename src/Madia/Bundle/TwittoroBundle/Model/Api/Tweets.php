@@ -24,10 +24,16 @@ class Tweets {
     protected $_baseUrl;
     /* @var constructed url with additional parameters */
     protected $_url;
+
+    protected $_doctrineContainer;
     
     
     public function __construct() {
         $this->_baseUrl = 'https://api.twitter.com/1.1/search/tweets.json';
+    }
+    
+    public function transportDoctrineContainer($container) {
+        $this->_doctrineContainer = $container;
     }
     
     /**
@@ -41,7 +47,7 @@ class Tweets {
      * @param string $hashtag the hashtag we should search for in the api call
      * @return type raw JSON string
       */
-    public function makeApiCall($oAuthToken, $oAuthTokenSecret, $consumerKey, $consumerSecret, $hashtag) {
+    public function makeApiCall($oAuthToken, $oAuthTokenSecret, $consumerKey, $consumerSecret, $hashtag, $maxId) {
         
         $oauth = array( 'oauth_consumer_key' => $consumerKey,
                 'oauth_nonce' => time(),
@@ -52,19 +58,34 @@ class Tweets {
         
         if($hashtag != 'all') {
             $hashtag = '#'.$hashtag; 
-            $this->_url = $this->_baseUrl . '?q=' . rawurlencode($hashtag). '&count='.rawurlencode('100');
+            $this->_url = $this->_baseUrl . '?q=' . rawurlencode($hashtag);
             $oauth = array_merge($oauth, array('q' => $hashtag, 'count' => '100'));
-        }else {
-            $this->_url = $this->_baseUrl. '?q=' . rawurlencode('#orotraining').  '&count=' . rawurlencode('100');
-            $oauth = array_merge($oauth, array('q' => '#orotraining', 'count' => '100'));
+        }
+        //if $maxId is set, there are results for this hashtag in the db
+        //if $maxId is not set, there are no results for this hashtag in the db.
+        if($maxId != null) {
+            //$maxId is the latest id, so we have to search from this point on
+            //the paremeter to use here is since_id to fetch every new tweet since the
+            //latest ($maxId) tweet
+            $this->_url = $this->_url . '&since_id=' . rawurlencode($maxId);
+            $oauth = array_merge($oauth, array('since_id' => $maxId));
         }
         
-        $baseInfo = $this->buildBaseString($this->_baseUrl, 'GET', $oauth);
+        //add the count parameter as the last parameter
+        $this->_url .= '&count='.rawurlencode('100');
+        $oauthFull = array_merge($oauth, array('count' => '100'));
+        
+        /*else {
+            $this->_url = $this->_baseUrl. '?q=' . rawurlencode('#orotraining').  '&count=' . rawurlencode('100');
+            $oauth = array_merge($oauth, array('q' => '#orotraining', 'count' => '100'));
+        }*/
+        
+        $baseInfo = $this->buildBaseString($this->_baseUrl, 'GET', $oauthFull);
         $compositeKey = rawurlencode($consumerSecret) . '&' . rawurlencode($oAuthTokenSecret);
         $oauthSignature = base64_encode(hash_hmac('sha1', $baseInfo, $compositeKey, true));
-        $oauth['oauth_signature'] = $oauthSignature;
+        $oauthFull['oauth_signature'] = $oauthSignature;
 
-        $header = array($this->buildAuthorizationHeader($oauth), 'Expect:');
+        $header = array($this->buildAuthorizationHeader($oauthFull), 'Expect:');
         $options = array(CURLOPT_HTTPHEADER => $header,
                          CURLOPT_HEADER => false,
                          CURLOPT_URL => $this->_url,
@@ -120,4 +141,15 @@ class Tweets {
         $r .= implode(', ', $values); 
         return $r; 
     }    
+    
+    
+    public function hashtagExists($hashtag) {
+        return $this->_doctrineContainer->getRepository('MadiaTwittoroBundle:Tweet')
+                        ->findOneByHashtag($hashtag);
+    }
+    
+    public function getMaxIdForHashtag($hashtag) {
+        return $this->_doctrineContainer->getRepository('MadiaTwittoroBundle:Tweet')
+                       ->getMaxIdForHashtag($hashtag);
+    }
 }

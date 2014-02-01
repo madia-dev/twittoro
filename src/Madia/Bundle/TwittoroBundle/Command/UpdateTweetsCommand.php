@@ -26,7 +26,9 @@ class UpdateTweetsCommand extends ContainerAwareCommand implements CronCommandIn
 {
     const COMMAND_NAME   = 'oro:cron:madia:twittoro:update-tweets';
 
+    protected $entityManager;
     
+    protected $doctrineContainer;
     /**
      * {@internaldoc}
      */
@@ -57,14 +59,15 @@ class UpdateTweetsCommand extends ContainerAwareCommand implements CronCommandIn
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        
+        $this->entityManager = $this->getContainer()->get('doctrine')->getManager();
+        $this->doctrineContainer = $this->getContainer()->get('doctrine');
         $hashtag = $input->getOption('hashtag');
         
         if(!$hashtag) {
             $output->writeln(sprintf('Updating tweets for all hashtags..'));
             $hashtag = 'all';
         }else {
-            $output->writeln(sprintf('Updating tweets for hashtag %s..'), $hashtag);
+            $output->writeln(sprintf('Updating tweets for hashtag #%s..',$hashtag));
         }
         
         if (!$this->getConfig()->get('madia_twittoro.update_tweets_enabled')) {
@@ -107,19 +110,31 @@ class UpdateTweetsCommand extends ContainerAwareCommand implements CronCommandIn
          */
         
         /** @var Tweets $tweets */
-        $tweetsApi = $this->getContainer()->get('madia_twittoro.api_tweets');
-        $tweetJsonData = $tweetsApi->makeApiCall($oAuthToken, $oAuthTokenSecret, $consumerKey, $consumerSecret, $hashtag);
+        $tweetsApi = $this->getContainer()->get('madia_twittoro.api_tweets');        
+        $tweetsApi->transportDoctrineContainer($this->doctrineContainer);
+        $maxId = null;
 
+        if($tweetsApi->hashtagExists($hashtag) > 0) {
+           $maxId = $tweetsApi->getMaxIdForHashtag($hashtag);
+        }
+
+        $tweetJsonData = $tweetsApi->makeApiCall($oAuthToken, $oAuthTokenSecret, 
+                $consumerKey, $consumerSecret, $hashtag, $maxId);
+        
         $tweetData = json_decode($tweetJsonData);
         if(isset($tweetData->errors)) {
             foreach($tweetData->errors as $error){
                 throw new \Exception('['.$error->code.'] => '.$error->message);
             }
+        }   
+        
+        if(count($tweetData->statuses) == 0) {
+            $output->notice($this->getTranslator()->trans('madia.twittoro.update_tweets.no_new_tweets_found'). ' #'.$hashtag);
+            return;
         }
-        
         $this->_persistTweetData($tweetData, $hashtag, $_output);
-        
-        $output->notice($this->getTranslator()->trans('madia.twittoro.update_tweets.tweets_have_been_updated'));
+
+        $output->notice(count($tweetData->statuses). ' ' .$this->getTranslator()->trans('madia.twittoro.update_tweets.tweets_have_been_created'));
 
     }
 
@@ -141,14 +156,16 @@ class UpdateTweetsCommand extends ContainerAwareCommand implements CronCommandIn
     
     protected function _persistTweetData($tweetData, $hashtag, $_output) {
         //get entitymanager
-        $entityManager = $this->getContainer()->get('doctrine')->getManager();
+        $entityManager = $this->entityManager;
+        
         if($hashtag == 'all') {
             $hashtag = '#orotraining'; 
+        } else {
+            $hashtag = '#'.$hashtag;    
         }
         //$tweetData is an object of the stdClass..
         //can't handle this object as an array..
-        foreach($tweetData->statuses as $tweet) {
-           
+        foreach($tweetData->statuses as $tweet) {          
            //creating new tweet entity
            $tweetEntity = new Tweet();
            
@@ -158,6 +175,7 @@ class UpdateTweetsCommand extends ContainerAwareCommand implements CronCommandIn
            $createdAt = new \DateTime($tweet->created_at);           
            $tweetEntity->setTweetStamp($createdAt);
            $tweetEntity->setHashtag($hashtag);
+           $tweetEntity->setMaxId($tweet->id_str);
            $tweetEntity->setCreatedAt(new \DateTime());
            $tweetEntity->setUpdatedAt(new \DateTime());
            
@@ -168,7 +186,7 @@ class UpdateTweetsCommand extends ContainerAwareCommand implements CronCommandIn
                 $entityManager->flush();
                 
                 //do some logging if the record has been updated.
-                $output->notice('record updated: '. $tweet->user->screen_name . ' ' . $tweet->text. ' '. $tweet->retweet_count . ' '. $tweet->created_at. ' '. $hashtag);
+                $output->notice($this->getTranslator()->trans('madia.twittoro.update_tweets.record_created') . ' ' . $tweet->user->screen_name . ' ' . $tweet->text. ' '. $tweet->retweet_count . ' '. $tweet->created_at. ' '. $hashtag);
  
            } catch (Exception $e) {
                $output->notice('Something went wrong');
