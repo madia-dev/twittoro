@@ -2,3 +2,8 @@ madia_twittoro_bundle:
     resource:     "@MadiaTwittoroBundle/Controller"
     type:         annotation
     prefix:       /madia
+##dashboard
+madia_twittoro_dashboard:
+    resource:     "@MadiaTwittoroBundle/Controller/Dashboard"
+    type:         annotation
+    prefix:       /dashboard

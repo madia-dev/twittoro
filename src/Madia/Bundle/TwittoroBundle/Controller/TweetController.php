@@ -122,27 +122,5 @@ class TweetController extends Controller
             'entity' => $entity,
             'form' => $form->createView(),
         );
-    }
-    
-    /**
-     * TODO: move this to a different controller class
-     * 
-     * @Route(
-     *      "/tweets_username/chart/{widget}",
-     *      name="madia_twittoro_dashboard_tweets_by_username_chart",
-     *      requirements={"widget"="[\w_-]+"}
-     * )
-     * @Template("MadiaTwittoroBundle:Dashboard:tweetsByUsername.html.twig")
-     */
-    public function tweetsByUsernameAction($widget)
-    {
-        return array_merge(
-            [
-                'items' => $this->getDoctrine()
-                        ->getRepository('MadiaTwittoroBundle:Tweet')
-                        ->getTweetsByUsername($this->get('oro_security.acl_helper'))
-            ],
-            $this->get('oro_dashboard.manager')->getWidgetAttributesForTwig($widget)
-        );
     }    
 }
