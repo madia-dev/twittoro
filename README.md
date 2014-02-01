@@ -73,3 +73,8 @@ app/console clank:server
 
 [1]:  http://symfony.com/doc/2.3/book/installation.html
 [2]:  http://getcomposer.org/
+=======
+twittoro
+========
+Bundle for extracting tweets from the twitter api and store them. 
+Chart widgets will display several statistics about the stored data.
