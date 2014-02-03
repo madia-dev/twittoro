@@ -28,4 +28,21 @@ class DashboardController extends Controller
             $this->get('oro_dashboard.manager')->getWidgetAttributesForTwig($widget)
         );
     }
+
+    /**
+     * @Route(
+     *      "/tweets_username/widget/",
+     *      name="madia_twittoro_dashboard_number_of_tweets_widget"
+     * )
+     * @Template("MadiaTwittoroBundle:Dashboard:numberOfTweets.html.twig")
+     */
+    public function numberOfTweetsAction()
+    {
+        return 
+            [
+                'items' => $this->getDoctrine()
+                        ->getRepository('MadiaTwittoroBundle:Tweet')
+                        ->getNumberOfTweets($this->get('oro_security.acl_helper'), 'orocrm')
+            ];
+    }
 }

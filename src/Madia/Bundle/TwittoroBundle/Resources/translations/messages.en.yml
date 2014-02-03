@@ -22,8 +22,11 @@ madia:
         update_tweets.no_new_tweets_found: No new tweets found for
         update_tweets.record_created: record created
         
+        ##dashboard
+        tweets_dashboard.title: Orotraining / OroCRM statistics of Twitter
+        
         ##Dashboard::normal chart
-        tweets_by_username.title: "Tweets by Username for #orotraining"
+        tweets_by_username.title: "Tweets by Username for #orocrm"
         
         ##Dashboard::pie chart
         #tweets_by_username.title: "Tweets by Username for #orotraining"
