@@ -80,4 +80,21 @@ class TweetRepository extends EntityRepository
 
         return $result;
     }
+    
+    public function getNumberOfTweets(AclHelper $aclHelper, $hashtag) {
+        
+        $hashtag = '#'.$hashtag;
+        $qb = $this->createQueryBuilder('t');
+        $qb->select('COUNT(t.tweet) as tweet_count')
+             ->where('t.hashtag = :hashtag')
+             ->setParameter('hashtag', $hashtag)
+             ->orderBy('tweet_count', 'DESC');
+
+        $data = $aclHelper->apply($qb)
+             ->getSingleScalarResult();
+        
+        $resultData[0] = [ 'numboftweets' => (int)$data, 'label' => 'Number of tweets for '.$hashtag];
+                
+        return $resultData;
+    }
 }

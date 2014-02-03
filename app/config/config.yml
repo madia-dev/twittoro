@@ -239,7 +239,7 @@ oro_help:
             uri: Platform/OroDashboardBundle
 
 oro_dashboard:
-    default_dashboard: main
+    default_dashboard: tweets_dashboard
 
 oro_theme:
     active_theme: oro
